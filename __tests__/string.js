@@ -3,6 +3,32 @@ const v = require('../src/index');
 
 describe('string', () => {
 
+  describe('type', () => {
+    it('should pass with string', () => {
+      let result = v.validateSync(v.string(), 'test');
+
+      isValidWithoutErrors(result);
+    });
+
+    it('should fail with number', () => {
+      let result = v.validateSync(v.string(), 1);
+
+      isNotValidWithErrors(result);
+    });
+
+    it('should fail with boolean', () => {
+      let result = v.validateSync(v.string(), true);
+
+      isNotValidWithErrors(result);
+    });
+
+    it('should fail with object', () => {
+      let result = v.validateSync(v.string(), { foo: 'bar' });
+
+      isNotValidWithErrors(result);
+    });
+  });
+
   describe('alphanum', () => {
     it('should pass with alphanumeric string', () => {
       let result = v.validateSync(v.string().alphanum(), 'SomethingElse3');

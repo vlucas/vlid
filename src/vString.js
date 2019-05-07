@@ -1,10 +1,15 @@
+const { t } = require('./i18n');
+
 /* @link https://github.com/manishsaraan/email-validator/blob/master/index.js */
 const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
 
 module.exports = function vString() {
   return {
     _base() {
-      return this.rule(value => typeof value === 'string');
+      return this.rule(
+        value => typeof value === 'string',
+        value => t('STRING_BASE', value)
+      );
     },
 
     alphanum() {
