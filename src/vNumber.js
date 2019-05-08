@@ -8,15 +8,18 @@ module.exports = function vNumber() {
         value => t('NUMBER_BASE', value)
       );
     },
+
     _cast() {
-      return this.cast(Number);
+      return this.cast(Number, false);
     },
+
     min(min) {
       return this.rule(
         value => value >= min,
         value => t('NUMBER_RULE_MIN', value, min)
       );
     },
+
     max(max) {
       return this.rule(
         value => value <= max,

@@ -13,7 +13,7 @@ module.exports = function vString() {
     },
 
     _cast() {
-      return this.cast(String);
+      return this.cast(String, false);
     },
 
     alphanum() {

@@ -8,6 +8,7 @@ module.exports = function vNumber() {
         value => t('BOOLEAN_BASE', value)
       );
     },
+
     _cast() {
       return this.cast(value => {
         let casted = value;
@@ -27,7 +28,7 @@ module.exports = function vNumber() {
         }
 
         return casted;
-      });
+      }, false);
     },
   };
 };

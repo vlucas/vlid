@@ -12,9 +12,14 @@ module.exports = function vBase() {
     _base() {},
     _cast() {},
 
-    cast(on) {
+    cast(on, turnOn = true) {
       if (typeof on === 'function') {
         _casts.push(on);
+
+        if (_doCast === false) {
+          _doCast = turnOn;
+        }
+
         return this;
       }
 

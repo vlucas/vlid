@@ -21,16 +21,20 @@ module.exports = function vObject(schema) {
       return this.rule(isObject, value => t('OBJECT_BASE', value));
     },
 
-    cast(on) {
+    cast(on, turnOn = true) {
       if (typeof on === 'function') {
         _casts.push(on);
+
+        if (_doCast === false) {
+          _doCast = turnOn;
+        }
+
         return this;
       }
 
       _doCast = on === false ? false : true;
       return this;
     },
-
 
     rule(run, message = GENERIC_ERROR) {
       _rules.push({ run, message });
