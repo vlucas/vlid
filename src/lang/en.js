@@ -1,4 +1,5 @@
 module.exports = {
+  BOOLEAN_BASE: '$1 is not boolean true/false',
   GENERIC_ERROR: '$1 failed validation',
   NUMBER_BASE: '$1 is not a number',
   NUMBER_RULE_MIN: 'Number $1 must be larger than or equal to $2',

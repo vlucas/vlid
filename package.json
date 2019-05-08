@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "source": "src/index.js",
   "scripts": {
+    "build": "parcel build src/index.js",
     "prettier": "prettier src/**.js src/**/*.js --write",
     "test": "jasmine __tests__/**.js"
   },

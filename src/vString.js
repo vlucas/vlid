@@ -12,6 +12,10 @@ module.exports = function vString() {
       );
     },
 
+    _cast() {
+      return this.cast(String);
+    },
+
     alphanum() {
       return this.regex(/^[a-zA-Z0-9]+$/);
     },

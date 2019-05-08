@@ -130,4 +130,46 @@ describe('string', () => {
       isNotValidWithErrors(result);
     });
   });
+
+  describe('cast', () => {
+    it('should pass with string', () => {
+      let result = v.validateSync(v.string(), 'test');
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual('test');
+    });
+
+    it('should pass with number and cast', () => {
+      let result = v.validateSync(v.string().cast(), 1);
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual('1');
+    });
+
+    it('should pass with boolean and cast', () => {
+      let result = v.validateSync(v.string().cast(), true);
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual('true');
+    });
+
+    it('should pass with object and cast', () => {
+      let result = v.validateSync(v.string().cast(), {});
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual('[object Object]');
+    });
+
+    it('should pass with object with custom toString method and cast', () => {
+      let obj = {
+        toString() {
+          return JSON.stringify({ foo: 'bar' });
+        }
+      };
+      let result = v.validateSync(v.string().cast(), obj);
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual('{"foo":"bar"}');
+    });
+  });
 });

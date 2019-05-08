@@ -1,4 +1,5 @@
 const vBase = require('./vBase');
+const vBoolean = require('./vBoolean');
 const vNumber = require('./vNumber');
 const vObject = require('./vObject');
 const vString = require('./vString');
@@ -20,6 +21,7 @@ function factory(module) {
 
 module.exports = {
   any: () => factory({}),
+  boolean: () => factory(vBoolean()),
   number: () => factory(vNumber()),
   object: (obj) => factory(vObject(obj)),
   string: () => factory(vString()),

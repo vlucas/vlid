@@ -26,10 +26,32 @@ describe('number', () => {
   });
 
   describe('max', () => {
-    it('should pass validation for strings shorter than max', () => {
+    it('should pass validation for numbers lower than max', () => {
       let result = v.validateSync(v.number().min(1).max(3), 2);
 
       isValidWithoutErrors(result);
+    });
+
+    it('should fail validation for numbers higher than max', () => {
+      let result = v.validateSync(v.number().min(1).max(3), 4);
+
+      isNotValidWithErrors(result);
+    });
+  });
+
+  describe('cast', () => {
+    it('should cast strings with numbers in them to numbers', () => {
+      let result = v.validateSync(v.number().cast(), '1');
+
+      isValidWithoutErrors(result);
+      expect(result.data).toBe(1);
+    });
+
+    it('should cast non-number strings to NaN and fail _base type validation', () => {
+      let result = v.validateSync(v.number().cast(), 'whatever string');
+
+      isNotValidWithErrors(result);
+      expect(result.errors[0].message).toContain('NaN is not a number');
     });
   });
 });

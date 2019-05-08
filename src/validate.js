@@ -1,6 +1,11 @@
 module.exports = {
-  validateSync: function(_rules, data, opts) {
-      let results = _rules.map(rule => {
+  validateSync: function(any, data, opts = {}) {
+      // Cast value if specified (strict by default)
+      if (any._doCast || opts._doCast) {
+        any._casts.forEach(cb => data = cb(data));
+      }
+
+      let results = any._rules.map(rule => {
         let msg =
           typeof rule.message === 'function'
             ? rule.message(data, opts)
@@ -12,8 +17,9 @@ module.exports = {
       let isValid = results.every(r => r === true);
 
       return {
-        isValid,
+        data,
         errors,
+        isValid,
       };
   },
 };

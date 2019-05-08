@@ -5,6 +5,8 @@ const GENERIC_ERROR = t('GENERIC_ERROR');
 
 module.exports = function vObject(schema) {
   let _rules = [];
+  let _casts = [];
+  let _doCast = false;
   let _schema = schema || {};
 
   function isObject(value) {
@@ -19,6 +21,17 @@ module.exports = function vObject(schema) {
       return this.rule(isObject, value => t('OBJECT_BASE', value));
     },
 
+    cast(on) {
+      if (typeof on === 'function') {
+        _casts.push(on);
+        return this;
+      }
+
+      _doCast = on === false ? false : true;
+      return this;
+    },
+
+
     rule(run, message = GENERIC_ERROR) {
       _rules.push({ run, message });
       return this;
@@ -27,12 +40,19 @@ module.exports = function vObject(schema) {
     /**
      * Override base validation
      */
-    validateSync(data, opts) {
+    validateSync(data, opts = {}) {
       let vBaseObj = vBase();
       let results = [];
+      let shouldCast = opts._doCast || _doCast;
+      let vobj = {
+        _casts,
+        _doCast: shouldCast,
+        _rules,
+      };
 
+      this._cast();
       this._base();
-      results.push(validate.validateSync(_rules, data, opts)); // do base validation
+      results.push(validate.validateSync(vobj, data, opts)); // do base validation
 
       let dt = typeof data;
       let isPlainObject = false;
@@ -43,7 +63,7 @@ module.exports = function vObject(schema) {
 
       if (data && isPlainObject) {
         Object.keys(schema).forEach(key => {
-          results.push(schema[key].validateSync(data[key], { key }));
+          results.push(schema[key].validateSync(data[key], { key, _doCast: shouldCast }));
         });
       }
 
