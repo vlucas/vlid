@@ -3,81 +3,52 @@ const vBase = require('./vBase');
 const validate = require('./validate');
 const GENERIC_ERROR = t('GENERIC_ERROR');
 
-module.exports = function vObject(schema) {
-  let _rules = [];
-  let _casts = [];
-  let _doCast = false;
-  let _schema = schema || {};
+module.exports = class vObject extends vBase {
+  constructor(schema = {}) {
+    super();
 
-  function isObject(value) {
-    return (
-      typeof value === 'object'
-      && Object.prototype.toString.call(value) === '[object Object]'
-    );
+    this._schema = schema || {};
   }
 
-  return {
-    _base() {
-      return this.rule(isObject, value => t('OBJECT_BASE', value));
-    },
+  _base() {
+    return this.rule(isObject, value => t('OBJECT_BASE', value));
+  }
 
-    cast(on, turnOn = true) {
-      if (typeof on === 'function') {
-        _casts.push(on);
+  /**
+   * Override base validation
+   */
+  validateSync(data, opts = {}) {
+    let results = [];
+    let shouldCast = opts._doCast || this._doCast;
 
-        if (_doCast === false) {
-          _doCast = turnOn;
-        }
+    results.push(validate.validateSync(this, data, opts)); // do base validation
 
-        return this;
-      }
+    let dt = typeof data;
+    let isPlainObject = false;
 
-      _doCast = on === false ? false : true;
-      return this;
-    },
+    if (dt === 'object') {
+      isPlainObject = Object.prototype.toString.call(data) === '[object Object]';
+    }
 
-    rule(run, message = GENERIC_ERROR) {
-      _rules.push({ run, message });
-      return this;
-    },
+    if (data && isPlainObject) {
+      Object.keys(this._schema).forEach(key => {
+        results.push(this._schema[key].validateSync(data[key], { key, _doCast: shouldCast }));
+      });
+    }
 
-    /**
-     * Override base validation
-     */
-    validateSync(data, opts = {}) {
-      let vBaseObj = vBase();
-      let results = [];
-      let shouldCast = opts._doCast || _doCast;
-      let vobj = {
-        _casts,
-        _doCast: shouldCast,
-        _rules,
-      };
+    let errors = results.filter(r => r.errors.length > 0);
+    let isValid = results.every(r => r.isValid === true);
 
-      this._cast();
-      this._base();
-      results.push(validate.validateSync(vobj, data, opts)); // do base validation
-
-      let dt = typeof data;
-      let isPlainObject = false;
-
-      if (dt === 'object') {
-        isPlainObject = Object.prototype.toString.call(data) === '[object Object]';
-      }
-
-      if (data && isPlainObject) {
-        Object.keys(schema).forEach(key => {
-          results.push(schema[key].validateSync(data[key], { key, _doCast: shouldCast }));
-        });
-      }
-
-      let errors = results.filter(r => r.errors.length > 0);
-      let isValid = results.every(r => r.isValid === true);
-
-      return {
-        isValid,
-        errors,
-      };
-    },
-  };
+    return {
+      isValid,
+      errors,
+    };
+  }
 };
+
+function isObject(value) {
+  return (
+    typeof value === 'object'
+    && Object.prototype.toString.call(value) === '[object Object]'
+  );
+}
