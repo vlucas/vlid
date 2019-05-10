@@ -43,8 +43,8 @@ module.exports = class vBase {
     return this.rule(v => v !== undefined && v !== null && v !== '');
   }
 
-  rule(run, message = GENERIC_ERROR) {
-    this._rules.push({ run, message });
+  rule(run, message = GENERIC_ERROR, opts = {}) {
+    this._rules.push(Object.assign({ run, message }, opts));
     return this;
   }
 
