@@ -1,6 +1,18 @@
 module.exports = {
   validateSync: function(any, data, opts = {}) {
-    let castData = data;
+    let castData = data === undefined ? any._default : data;
+
+    if (any._allow !== undefined) {
+      let isAllowed = Array.isArray(any._allow) ? any._allow.includes(castData) : any._allow === castData;
+
+      if (isAllowed) {
+        return {
+          data: castData,
+          errors: [],
+          isValid: true,
+        };
+      }
+    }
 
     // Cast value if specified (strict by default)
     if (any._doCast || opts._doCast) {

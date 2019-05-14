@@ -4,6 +4,8 @@ const GENERIC_ERROR = t('GENERIC_ERROR');
 
 module.exports = class vBase {
   constructor() {
+    this._allow;
+    this._default;
     this._rules = [];
     this._casts = [];
     this._doCast = false;
@@ -16,6 +18,11 @@ module.exports = class vBase {
   // These should be overridden by inheriting classes
   _base() {}
   _cast() {}
+
+  allow(value) {
+    this._allow = value;
+    return this;
+  }
 
   cast(on, turnOn = true) {
     if (typeof on === 'function') {
@@ -30,6 +37,11 @@ module.exports = class vBase {
 
     this._doCast = on === false ? false : true;
     return this;
+  }
+
+  default(value) {
+    this._default = value;
+    return this.allow(value); // always allow the default value by default
   }
 
   message(msg) {
