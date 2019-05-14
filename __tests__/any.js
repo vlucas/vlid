@@ -53,4 +53,33 @@ describe('any', () => {
     });
   });
 
+  describe('default', () => {
+    it('should be able to be provide a default value', () => {
+      let input = undefined;
+      let result = v.validateSync(v.string().default(null), input);
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual(null);
+    });
+  });
+
+  describe('allow', () => {
+    it('should be able to be provide an allowed value that is not the validation type', () => {
+      let input = 'string';
+      let result = v.validateSync(v.number().allow(input), input);
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual(input);
+    });
+
+    it('should be able to be provide an array of allowed values', () => {
+      let input = 'one';
+      let allowed = ['one', 'two'];
+      let result = v.validateSync(v.number().allow(allowed), input);
+
+      isValidWithoutErrors(result);
+      expect(result.data).toEqual(input);
+    });
+  });
+
 });

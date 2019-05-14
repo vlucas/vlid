@@ -1,23 +1,38 @@
 module.exports = {
   validateSync: function(any, data, opts = {}) {
+    let castData = data === undefined ? any._default : data;
+
+    if (any._allow !== undefined) {
+      let isAllowed = Array.isArray(any._allow) ? any._allow.includes(castData) : any._allow === castData;
+
+      if (isAllowed) {
+        return {
+          data: castData,
+          errors: [],
+          isValid: true,
+        };
+      }
+    }
+
     // Cast value if specified (strict by default)
     if (any._doCast || opts._doCast) {
-      any._casts.forEach(cb => data = cb(data));
+      any._casts.forEach(cb => castData = cb(castData));
     }
 
     let results = any._rules.map(rule => {
+      let ruleData = rule.rawData ? data : castData;
       let msg =
         typeof rule.message === 'function'
-        ? rule.message(data, opts)
+        ? rule.message(ruleData, opts)
         : rule.message;
 
-      return rule.run(data) || new Error(msg);
+      return rule.run(ruleData) || new Error(msg);
     });
     let errors = results.filter(r => r instanceof Error);
     let isValid = results.every(r => r === true);
 
     return {
-      data,
+      data: castData,
       errors,
       isValid,
     };
