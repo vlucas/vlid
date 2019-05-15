@@ -1,5 +1,7 @@
 module.exports = {
   ARRAY_BASE: '$1 is not a valid array value',
+  ARRAY_RULE_MIN: 'Number of array items must be at least $1',
+  ARRAY_RULE_MAX: 'Number of array items must be no greater than $1',
   BOOLEAN_BASE: '$1 is not a valid boolean value',
   DATE_BASE: '$1 is not a valid date',
   DATE_RULE_MIN: 'Date $1 must be after $2',

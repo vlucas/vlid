@@ -36,4 +36,38 @@ describe('array', () => {
     });
   });
 
+  describe('min', () => {
+    it('should validate array has min number of items', () => {
+      let input = [];
+      let result = v.validateSync(v.array().min(1), input);
+
+      isNotValidWithErrors(result);
+      expect(result.errors[0].message).toContain('must be at least "1"');
+    });
+
+    it('should pass validation when array has min number of items', () => {
+      let input = [42];
+      let result = v.validateSync(v.array().min(1), input);
+
+      isValidWithoutErrors(result);
+    });
+  });
+
+  describe('max', () => {
+    it('should validate array has max number of items', () => {
+      let input = [1, 2, 3];
+      let result = v.validateSync(v.array().max(1), input);
+
+      isNotValidWithErrors(result);
+      expect(result.errors[0].message).toContain('must be no greater than "1"');
+    });
+
+    it('should pass validation when array has max number of items', () => {
+      let input = [1, 2, 3];
+      let result = v.validateSync(v.array().max(3), input);
+
+      isValidWithoutErrors(result);
+    });
+  });
+
 });

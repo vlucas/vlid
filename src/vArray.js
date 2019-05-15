@@ -3,10 +3,10 @@ const vBase = require('./vBase');
 const validate = require('./validate');
 
 module.exports = class vArray extends vBase {
-  constructor(schema = {}) {
+  constructor() {
     super();
 
-    this._schema = schema || {};
+    this._schema;
   }
 
   _base() {
@@ -16,6 +16,20 @@ module.exports = class vArray extends vBase {
   items(schema) {
     this._schema = schema;
     return this;
+  }
+
+  min(min, err = null) {
+    return this.rule(
+      value => value.length >= min,
+      value => err || t('ARRAY_RULE_MIN', min)
+    );
+  }
+
+  max(max, err = null) {
+    return this.rule(
+      value => value.length <= max,
+      value => err || t('ARRAY_RULE_MAX', max)
+    );
   }
 
   /**

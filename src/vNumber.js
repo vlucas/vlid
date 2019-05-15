@@ -13,17 +13,17 @@ module.exports = class vNumber extends vBase {
     return this.cast(Number, false);
   }
 
-  min(min) {
+  min(min, err = null) {
     return this.rule(
       value => value >= min,
-      value => t('NUMBER_RULE_MIN', value, min)
+      value => err || t('NUMBER_RULE_MIN', value, min)
     );
   }
 
-  max(max) {
+  max(max, err = null) {
     return this.rule(
       value => value <= max,
-      value => t('NUMBER_RULE_MAX', value, max)
+      value => err || t('NUMBER_RULE_MAX', value, max)
     );
   }
 };
