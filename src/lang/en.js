@@ -1,4 +1,5 @@
 module.exports = {
+  ARRAY_BASE: '$1 is not a valid array value',
   BOOLEAN_BASE: '$1 is not a valid boolean value',
   DATE_BASE: '$1 is not a valid date',
   DATE_RULE_MIN: 'Date $1 must be after $2',

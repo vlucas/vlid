@@ -1,7 +1,6 @@
 const { t } = require('./i18n');
 const vBase = require('./vBase');
 const validate = require('./validate');
-const GENERIC_ERROR = t('GENERIC_ERROR');
 
 module.exports = class vObject extends vBase {
   constructor(schema = {}) {
@@ -40,6 +39,7 @@ module.exports = class vObject extends vBase {
     let isValid = results.every(r => r.isValid === true);
 
     return {
+      data,
       isValid,
       errors,
     };
