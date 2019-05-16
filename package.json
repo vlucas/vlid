@@ -11,7 +11,12 @@
   },
   "keywords": [
     "joi",
-    "validation"
+    "yup",
+    "validation",
+    "browser validation",
+    "form validation",
+    "json validation",
+    "lightweight validation"
   ],
   "author": "Vance Lucas <vance@vancelucas.com>",
   "license": {
