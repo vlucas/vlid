@@ -39,7 +39,7 @@ describe('date', () => {
       let result = v.validateSync(v.date().cast(), input);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain(`"${input}" is not a valid date`);
+      expect(result.errors[0].message).toContain('Must be a date');
     });
   });
 
@@ -72,7 +72,7 @@ describe('date', () => {
       let result = v.validateSync(v.date().min(minDate), input);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain(`"${input}" must be after`);
+      expect(result.errors[0].message).toContain('must be after');
     });
   });
 
@@ -97,7 +97,7 @@ describe('date', () => {
       let result = v.validateSync(v.date().max(maxDate), input);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain(`"${input}" must be before`);
+      expect(result.errors[0].message).toContain('must be before');
     });
   });
 
@@ -114,7 +114,7 @@ describe('date', () => {
       let result = v.validateSync(v.date().iso(), input);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain(`"${input}" is not a valid date in ISO-8601 format`);
+      expect(result.errors[0].message).toContain('ISO-8601 format');
     });
   });
 });

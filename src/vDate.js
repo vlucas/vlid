@@ -16,26 +16,26 @@ module.exports = class vDate extends vBase {
     return this.cast(castToDate, false);
   }
 
-  min(min) {
+  min(min, err = null) {
     return this.rule(
       value => value >= min,
-      value => t('DATE_RULE_MIN', value, min)
+      err || t('DATE_RULE_MIN', min)
     );
   }
 
-  max(max) {
+  max(max, err = null) {
     return this.rule(
       value => value <= max,
-      value => t('DATE_RULE_MAX', value, max)
+      err || t('DATE_RULE_MAX', max)
     );
   }
 
-  iso() {
+  iso(err = null) {
     this.cast(); // This rule requires casting (ISO-8601 date strings can be parsed)
     this._base = () => {};
 
     // This ISO rule has to be run on the raw input data, not the cast data
-    return this.rule(isISODate, value => t('DATE_RULE_ISO', value), { rawData: true });
+    return this.rule(isISODate, err || t('DATE_RULE_ISO'), { rawData: true });
   }
 };
 

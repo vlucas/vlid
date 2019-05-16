@@ -82,4 +82,34 @@ describe('any', () => {
     });
   });
 
+  describe('array of rules', () => {
+    it('array of validation rules passes either one', () => {
+      let input = 123;
+      let result = v.validateSync([v.string(), v.number()], input);
+
+      isValidWithoutErrors(result);
+      expect(result.errors).toEqual([]);
+      expect(result.data).toEqual(input);
+    });
+
+    it('array of validation rules fails when all validation rules fail', () => {
+      let input = 123;
+      let result = v.validateSync([v.boolean(), v.string()], input);
+
+      isNotValidWithErrors(result);
+      expect(result.data).toEqual(input);
+    });
+
+    it('array of multiple validation rule failures are reported as a single error', () => {
+      let input = 123;
+      let result = v.validateSync([v.boolean(), v.string()], input);
+
+      isNotValidWithErrors(result);
+      expect(result.data).toEqual(input);
+      expect(result.errors[0].message).toContain('Must be a boolean');
+      expect(result.errors[0].message).toContain('Must be a string');
+      expect(result.errors.length).toEqual(1);
+    });
+  });
+
 });

@@ -10,20 +10,46 @@ widely-supported ES6 features, and thus requires a modern-ish browser and/or Nod
 not supported. All versions of Firefox, Safari, Chrome, and Edge released within the past several years are
 fully supported.
 
+## Size
+
+Bundle size is very important, and a lot of attention is paid to keeping the code lean and small. We try to
+strike a balance of providing all the core validations and logic that you most commonly need, while making it
+easy to provide your own custom validation rules for anything else.
+
+![vlid.js bundle size on BundlePhobia](https://bundlephobia.com/api/stats-image?name=vlid&version=0.1.0)
+
 ## Installation
 
-Install from NPM:
+Install from NPM or Yarn:
 
-`npm install vlid --save`
+```shell
+npm install vlid --save
+```
+```shell
+yarn add vlid
+```
 
 Use in your JavaScript:
 
-`const v = require('vlid');`
+```javascript
+const v = require('vlid');`
+```
 
 Or with `import`:
 
-`import v from 'vlid';`
+```javascript
+import v from 'vlid';
+```
 
 ## Usage
+
+### v.any()
+
+The base validation object, can be used to represent any value or as a base for completely custom new
+validation rules.
+
+```javascript
+let result = v.validateSync(v.any(), 'whatever you want'); // result.isValid = true
+```
 
 Full API docs coming soon. Still working on what the full public API will be.

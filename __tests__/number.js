@@ -51,7 +51,7 @@ describe('number', () => {
       let result = v.validateSync(v.number().cast(), 'whatever string');
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain('"NaN" is not a number');
+      expect(result.errors[0].message).toContain('Must be a number');
     });
   });
 });

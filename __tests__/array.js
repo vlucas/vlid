@@ -14,7 +14,7 @@ describe('array', () => {
       let result = v.validateSync(v.array(1), 1);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain(`is not a valid array`);
+      expect(result.errors[0].message).toContain('Must be an array');
     });
   });
 
@@ -31,8 +31,8 @@ describe('array', () => {
       let result = v.validateSync(v.array().items(v.number()), input);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain('"one" is not a number');
-      expect(result.errors[1].message).toContain('"three" is not a number');
+      expect(result.errors[0].message).toContain('Must be a number');
+      expect(result.errors[1].message).toContain('Must be a number');
     });
   });
 
@@ -42,7 +42,7 @@ describe('array', () => {
       let result = v.validateSync(v.array().min(1), input);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain('must be at least "1"');
+      expect(result.errors[0].message).toContain('must be at least 1');
     });
 
     it('should pass validation when array has min number of items', () => {
@@ -59,7 +59,7 @@ describe('array', () => {
       let result = v.validateSync(v.array().max(1), input);
 
       isNotValidWithErrors(result);
-      expect(result.errors[0].message).toContain('must be no greater than "1"');
+      expect(result.errors[0].message).toContain('must be no greater than 1');
     });
 
     it('should pass validation when array has max number of items', () => {

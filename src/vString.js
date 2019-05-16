@@ -17,10 +17,10 @@ module.exports = class vString extends vBase {
   }
 
   alphanum() {
-    return this.regex(/^[a-zA-Z0-9]+$/);
+    return this.regex(/^[a-zA-Z0-9]+$/, t('STRING_RULE_ALPHANUM'));
   }
 
-  email() {
+  email(err) {
     return this.rule(function(email) {
       if (!email) return false;
 
@@ -42,22 +42,22 @@ module.exports = class vString extends vBase {
         return false;
 
       return true;
-    });
+    }, err || t('STRING_RULE_EMAIL'));
   }
 
-  min(len) {
-    return this.rule(value => value.length >= len);
+  min(len, err = null) {
+    return this.rule(value => value.length >= len, err || t('STRING_RULE_MIN', len));
   }
 
-  max(len) {
-    return this.rule(value => value.length <= len);
+  max(len, err = null) {
+    return this.rule(value => value.length <= len, err || t('STRING_RULE_MAX', len));
   }
 
-  regex(pattern) {
-    return this.rule(value => pattern.test(value));
+  regex(pattern, err = null) {
+    return this.rule(value => pattern.test(value), err || t('STRING_RULE_REGEX', pattern));
   }
 
-  url(str) {
+  url(str, err = null) {
     return this.rule(function validURL(str) {
       var pattern = new RegExp(
         '^(https?:\\/\\/)?' + // protocol
@@ -69,6 +69,6 @@ module.exports = class vString extends vBase {
         'i'
       ); // fragment locator
       return !!pattern.test(str);
-    });
+    }, err || t('STRING_RULE_URL'));
   }
 };

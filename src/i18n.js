@@ -12,7 +12,7 @@ function t(key, ...args) {
 
 function format(msg, fields) {
   return fields.reduce(function(msg, currentValue, currentIndex) {
-    return msg.replace('$' + (currentIndex + 1), '"' + currentValue + '"');
+    return msg.replace('$' + (currentIndex + 1), currentValue);
   }, msg);
 }
 

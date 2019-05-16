@@ -16,14 +16,14 @@ module.exports = class vNumber extends vBase {
   min(min, err = null) {
     return this.rule(
       value => value >= min,
-      value => err || t('NUMBER_RULE_MIN', value, min)
+      value => err || t('NUMBER_RULE_MIN', min)
     );
   }
 
   max(max, err = null) {
     return this.rule(
       value => value <= max,
-      value => err || t('NUMBER_RULE_MAX', value, max)
+      value => err || t('NUMBER_RULE_MAX', max)
     );
   }
 };
