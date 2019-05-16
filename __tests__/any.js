@@ -112,4 +112,48 @@ describe('any', () => {
     });
   });
 
+  describe('validate', () => {
+    it('should return a Promise for async validation resolution', () => {
+      let input = 'supercalifragilisticexpialadocious';
+      let promise = v.validate(v.string().required(), input);
+
+      expect(promise instanceof Promise).toBe(true);
+
+      return promise;
+    });
+
+    it('should reject a Promise for async validation failures', () => {
+      let input = 12345;
+      let promise = v.validate(v.string().required(), input);
+
+      return promise
+        .then(() => {
+          expect('should have rejected this...').toBe(false, 'Promise was supposed to be rejected');
+        })
+        .catch(err => {
+          expect(err.message).toContain('Must be a string');
+          expect(err.data).toBe(input);
+        });
+    });
+
+    it('should handle a custom validation rule that returns a Promise', () => {
+      let input = 'supercalifragilisticexpialadocious';
+      let promise = v.validate(v.any().rule((value) => Promise.resolve(true)).required(), input);
+
+      expect(promise instanceof Promise).toBe(true);
+
+      return promise;
+    });
+  });
+
+  describe('validateSync', () => {
+    it('should throw error when used with rules that return a Promise', () => {
+      let input = 'supercalifragilisticexpialadocious';
+
+      expect(() => {
+        v.validateSync(v.any().rule((value) => Promise.resolve(true)).required(), input);
+      }).toThrow(new Error('Cannot return Promise futures from vlid.validateSync()'));
+    });
+  });
+
 });

@@ -48,8 +48,16 @@ module.exports = class vBase {
   }
 
   rule(run, message = GENERIC_ERROR, opts = {}) {
+    if (typeof run !== 'function') {
+      throw new Error('rule() first argument must be a function. Recieved: ' + typeof run);
+    }
+
     this._rules.push(Object.assign({ run, message }, opts));
     return this;
+  }
+
+  validate(data, opts = {}) {
+    return validate.validate(this, data, opts);
   }
 
   validateSync(data, opts = {}) {
