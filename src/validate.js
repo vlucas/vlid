@@ -1,13 +1,36 @@
 const { t } = require('./i18n');
 
+/**
+ * ValidationError class
+ */
+class ValidationError extends Error {
+  constructor(...args) {
+    super(...args);
+    Error.captureStackTrace(this, ValidationError);
+  }
+}
+
+function createError(msg, path = null) {
+  let e = new ValidationError(msg);
+
+  e.path = path;
+
+  return e;
+}
+
+/**
+ * Async validation function
+ *
+ * @return Promise
+ */
 function validate(any, data, opts = {}) {
-  let results = validateSync(any, data, Object.assign(opts, { _runAsync: true }));
+  let results = validateSync(any, data, Object.assign(opts, { async: true }));
 
   return Promise.all(results.map(r => r instanceof Promise ? r : Promise.resolve(r)))
     .then(results => formatResults(results, data))
     .then(result => {
       if (!result.isValid) {
-        let err = new Error(result.message);
+        let err = createError(result.message);
 
         Object.assign(err, result);
 
@@ -18,10 +41,13 @@ function validate(any, data, opts = {}) {
     });
 }
 
+/**
+ * Primary validation function
+ */
 function validateSync(any, data, opts = {}) {
+  let path = opts.path || '';
   let errors = [];
   let isValid = true;
-  let message = '';
   let results = [];
   let castData = data === undefined ? any._default : data;
 
@@ -49,16 +75,14 @@ function validateSync(any, data, opts = {}) {
       .map(r => r.errors)
       .reduce((acc, val) => acc.concat(val), []);
 
-    // Return a single error
+    // Return a single ValidationError
     if (errors.length > 0) {
-      errors = [new Error(t('GENERIC_ERROR_MULTIPLE') + ': (' + errors.map(e => e.message).join(') ' + t('GENERIC_OR') + ' (') + ')')];
-      message = errors[0].message;
+      errors = [createError(t('GENERIC_ERROR_MULTIPLE') + ': (' + errors.map(e => e.message).join(') ' + t('GENERIC_OR') + ' (') + ')', path)];
     }
 
     return {
       data: castData,
       errors,
-      message,
       isValid,
     };
   // Normal single validation
@@ -70,23 +94,34 @@ function validateSync(any, data, opts = {}) {
         ? rule.message(ruleData, opts)
         : rule.message;
 
-      return rule.run(ruleData) || new Error(msg);
+      let ruleResult = rule.run(ruleData) || createError(msg, path);
+
+      return ruleResult;
     });
     let hasPromises = results.filter(r => r instanceof Promise).length > 0;
 
-    if (hasPromises && !opts._runAsync) {
-      throw new Error('Cannot return Promise futures from vlid.validateSync()');
+    if (hasPromises && !opts.async) {
+      throw createError('Cannot return Promise futures from vlid.validateSync()', path);
     }
   }
 
-  return opts._runAsync ? results : formatResults(results, castData);
+  return opts.async ? results : formatResults(results, castData, opts.path);
+}
+
+function flattenErrors(results) {
+  return arrayFlatten(results.filter(r => r.errors ? r.errors.length > 0 : r instanceof Error)
+      .map(r => r.errors || r));
+}
+
+function arrayFlatten(array) {
+  return array.reduce((acc, val) => acc.concat(val), []);
 }
 
 function formatData(any, data, opts) {
   let castData = data === undefined ? any._default : data;
 
   // Cast value if specified (strict by default)
-  if (any._doCast || opts._doCast) {
+  if (any._doCast || opts.cast) {
     any._casts.forEach(cb => castData = cb(castData));
   }
 
@@ -96,24 +131,32 @@ function formatData(any, data, opts) {
 /**
  * Format array of results into a return object
  */
-function formatResults(results, data) {
-  let message = '';
+function formatResults(results, data, path = null) {
   let errors = results.filter(r => r instanceof Error);
   let isValid = results.every(r => r === true);
 
-  if (errors.length > 0) {
-    message = errors.reduce((acc, err) => acc.concat(err), [])
-      .filter(err => err)
-      .map(err => err.message)
-      .join(', ');
-  }
-
-  return {
+  let result = {
     data,
     errors,
-    message,
     isValid,
+    path,
   };
+
+  // Show nested results when there is a previous path
+  if (!path) {
+    result.errors = flattenErrors(results);
+    result.results = results.filter(r => r.isValid === false);
+    result.isValid = result.errors.length === 0;
+  }
+
+  return result;
 }
 
-module.exports = { validate, validateSync };
+module.exports = {
+  flattenErrors,
+  formatData,
+  formatResults,
+  validate,
+  validateSync,
+  ValidationError,
+};

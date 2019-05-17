@@ -41,11 +41,7 @@ module.exports = class vArray extends vBase {
     results.push(validate.validateSync(this, data, opts)); // do base validation
 
     if (!Array.isArray(data)) {
-      return {
-        data,
-        isValid: results[0].isValid,
-        errors: results[0].errors,
-      };
+      return validate.formatResults(results);
     }
 
     if (this._schema) {
@@ -54,15 +50,6 @@ module.exports = class vArray extends vBase {
       });
     }
 
-    let errors = results.filter(r => r.errors.length > 0)
-      .map(r => r.errors)
-      .reduce((acc, val) => acc.concat(val), []);
-    let isValid = results.every(r => r.isValid === true);
-
-    return {
-      data,
-      isValid,
-      errors,
-    };
+    return validate.formatResults(results);
   }
 };

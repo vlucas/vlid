@@ -131,7 +131,7 @@ describe('any', () => {
           expect('should have rejected this...').toBe(false, 'Promise was supposed to be rejected');
         })
         .catch(err => {
-          expect(err.message).toContain('Must be a string');
+          expect(err.errors[0].message).toContain('Must be a string');
           expect(err.data).toBe(input);
         });
     });

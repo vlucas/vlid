@@ -18,7 +18,7 @@ module.exports = class vObject extends vBase {
    */
   validateSync(data, opts = {}) {
     let results = [];
-    let shouldCast = opts._doCast || this._doCast;
+    let shouldCast = opts.cast || this._doCast;
 
     results.push(validate.validateSync(this, data, opts)); // do base validation
 
@@ -30,19 +30,12 @@ module.exports = class vObject extends vBase {
     }
 
     if (data && isPlainObject) {
-      Object.keys(this._schema).forEach(key => {
-        results.push(this._schema[key].validateSync(data[key], { key, _doCast: shouldCast }));
+      Object.keys(this._schema).forEach(path => {
+        results.push(this._schema[path].validateSync(data[path], { path, cast: shouldCast }));
       });
     }
 
-    let errors = results.filter(r => r.errors.length > 0);
-    let isValid = results.every(r => r.isValid === true);
-
-    return {
-      data,
-      isValid,
-      errors,
-    };
+    return validate.formatResults(results);
   }
 };
 
