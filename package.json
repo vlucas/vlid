@@ -24,7 +24,6 @@
   },
   "devDependencies": {
     "jasmine": "^3.3.1",
-    "jest": "^24.8.0",
     "prettier": "^1.16.4"
   },
   "browserslist": [
