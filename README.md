@@ -1,6 +1,6 @@
 ![vlid.js](./assets/logo.png)
 
-[![NPM](https://nodei.co/npm/vlid.png)](https://nodei.co/npm/vlid/)
+[![NPM](https://badgen.net/npm/v/vlid)](https://www.npmjs.com/package/vlid)
 [![Build
 Status](https://travis-ci.org/vlucas/vlid.png?branch=master)](https://travis-ci.org/vlucas/vlid)
 ![Min Size](https://badgen.net/bundlephobia/min/vlid)
