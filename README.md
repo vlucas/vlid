@@ -1,4 +1,4 @@
-# vlid.js
+![vlid.js](./assets/logo.png)
 
 [![NPM](https://nodei.co/npm/vlid.png)](https://nodei.co/npm/vlid/)
 [![Build
