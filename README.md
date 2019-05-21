@@ -6,11 +6,11 @@ Status](https://travis-ci.org/vlucas/vlid.png?branch=master)](https://travis-ci.
 ![Min Size](https://badgen.net/bundlephobia/min/vlid)
 ![Minzipped Size](https://badgen.net/bundlephobia/minzip/vlid)
 
-Lightweight validation library with NO dependencies targeting web browsers and Node.js. A nice Joi alternative
+Lightweight Joi-like validation library with NO dependencies targeting web browsers and Node.js. A nice Joi alternative
 with a similar API.
 
 NOTE: `vlid.js` targets language features supported in 90%+ browsers. This means that it does use some more
-widely-supported ES6 features, and thus requires a modern-ish browser and/or Node 8+. Most notably, IE11 is
+widely-supported ES6 features, and thus requires a modern-ish browser and/or Node 6+. Most notably, IE11 is
 not supported. All versions of Firefox, Safari, Chrome, and Edge released within the past several years are
 fully supported.
 
