@@ -5,7 +5,7 @@ const vDate = require('./vDate');
 const vNumber = require('./vNumber');
 const vObject = require('./vObject');
 const vString = require('./vString');
-const { validate, validateSync } = require('./validate');
+const { validate, validateSync, ref } = require('./validate');
 
 module.exports = {
   any: () => new vBase(),
@@ -14,6 +14,7 @@ module.exports = {
   date: () => new vDate(),
   number: () => new vNumber(),
   object: (obj) => new vObject(obj),
+  ref,
   string: () => new vString(),
   validate(schema, data) {
     return schema.validate ? schema.validate(data) : validate(schema, data);

@@ -18,6 +18,20 @@ function createError(msg, path = null) {
   return e;
 }
 
+let _data;
+let _refs = [];
+function ref(field) {
+  let r = () => oget(_data, field);
+
+  _refs.push(r);
+
+  return r;
+}
+
+function setData(data) {
+  _data = data;
+}
+
 /**
  * Async validation function
  *
@@ -49,21 +63,7 @@ function validateSync(any, data, opts = {}) {
   let errors = [];
   let isValid = true;
   let results = [];
-  let castData = data === undefined ? any._default : data;
-
-  if (any._allow !== undefined) {
-    let isAllowed = Array.isArray(any._allow) ? any._allow.includes(castData) : any._allow === castData;
-
-    if (isAllowed) {
-      return {
-        data: castData,
-        errors: [],
-        isValid: true,
-      };
-    }
-  }
-
-  castData = formatData(any, castData, opts);
+  let castData = data;
 
   // Array = If ANY validation rules passes, the whole thing passes
   if (Array.isArray(any)) {
@@ -81,12 +81,36 @@ function validateSync(any, data, opts = {}) {
     }
 
     return {
-      data: castData,
+      data,
       errors,
       isValid,
     };
   // Normal single validation
   } else {
+    any.value(data);
+
+    if (opts.cast) {
+      any.cast();
+    }
+
+    castData = any.value();
+
+    if (_data && opts.path) {
+      oset(_data, opts.path, castData);
+    }
+
+    if (any._allow !== undefined) {
+      let isAllowed = Array.isArray(any._allow) ? any._allow.includes(castData) : any._allow === castData;
+
+      if (isAllowed) {
+        return {
+          data: castData,
+          errors: [],
+          isValid: true,
+        };
+      }
+    }
+
     results = any._rules.map(rule => {
       let ruleData = rule.rawData ? data : castData;
       let msg =
@@ -117,17 +141,6 @@ function arrayFlatten(array) {
   return array.reduce((acc, val) => acc.concat(val), []);
 }
 
-function formatData(any, data, opts) {
-  let castData = data === undefined ? any._default : data;
-
-  // Cast value if specified (strict by default)
-  if (any._doCast || opts.cast) {
-    any._casts.forEach(cb => castData = cb(castData));
-  }
-
-  return castData;
-}
-
 /**
  * Format array of results into a return object
  */
@@ -152,10 +165,53 @@ function formatResults(results, data, path = null) {
   return result;
 }
 
+/**
+ * Get nested key from provided object
+ */
+function oget(obj, props) {
+  if (typeof props == 'string') {
+    props = props.split('.');
+  }
+  var prop;
+  while (props.length) {
+    prop = props.shift();
+    obj = obj[prop];
+    if (!obj) {
+      return obj;
+    }
+  }
+  return obj;
+}
+
+function oset(obj, props, value) {
+  if (typeof props == 'string') {
+    props = props.split('.');
+  }
+  var lastProp = props.pop();
+  if (!lastProp) {
+    return false;
+  }
+  var thisProp;
+  while ((thisProp = props.shift())) {
+    if (typeof obj[thisProp] == 'undefined') {
+      obj[thisProp] = {};
+    }
+    obj = obj[thisProp];
+    if (!obj || typeof obj != 'object') {
+      return false;
+    }
+  }
+  obj[lastProp] = value;
+  return true;
+}
+
 module.exports = {
   flattenErrors,
-  formatData,
   formatResults,
+  oget,
+  oset,
+  ref,
+  setData,
   validate,
   validateSync,
   ValidationError,

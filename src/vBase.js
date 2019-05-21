@@ -9,6 +9,7 @@ module.exports = class vBase {
     this._rules = [];
     this._casts = [];
     this._doCast = false;
+    this._value;
 
     this._cast(); // Always run casting rules
     this._base(); // Always run base validation rule for type
@@ -54,6 +55,22 @@ module.exports = class vBase {
 
     this._rules.push(Object.assign({ run, message }, opts));
     return this;
+  }
+
+  value(val) {
+    if (val !== undefined) {
+      this._value = val;
+      return this;
+    }
+
+    let castData = this._value === undefined ? this._default : this._value;
+
+    // Cast value if specified (strict by default)
+    if (this._doCast) {
+      this._casts.forEach(cb => castData = cb(castData));
+    }
+
+    return castData;
   }
 
   validate(data, opts = {}) {

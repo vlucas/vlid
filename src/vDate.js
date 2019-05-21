@@ -1,5 +1,6 @@
 const { t } = require('./i18n');
 const vBase = require('./vBase');
+const { val } = require('./util');
 
 const isoDateRegExp = new RegExp( /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))/ );
 
@@ -18,15 +19,15 @@ module.exports = class vDate extends vBase {
 
   min(min, err = null) {
     return this.rule(
-      value => value >= min,
-      err || t('DATE_RULE_MIN', min)
+      value => value >= val(min),
+      err ? err : () => t('DATE_RULE_MIN', val(min))
     );
   }
 
   max(max, err = null) {
     return this.rule(
-      value => value <= max,
-      err || t('DATE_RULE_MAX', max)
+      value => value <= val(max),
+      err ? err : () => t('DATE_RULE_MAX', val(max))
     );
   }
 
