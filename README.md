@@ -1,6 +1,10 @@
 # vlid.js
 
-![Min Size](https://badgen.net/bundlephobia/min/vlid) ![Minzipped Size](https://badgen.net/bundlephobia/minzip/vlid)
+[![NPM](https://nodei.co/npm/vlid.png)](https://nodei.co/npm/vlid/)
+[![Build
+Status](https://travis-ci.org/vlucas/vlid.png?branch=master)](https://travis-ci.org/vlucas/vlid)
+![Min Size](https://badgen.net/bundlephobia/min/vlid)
+![Minzipped Size](https://badgen.net/bundlephobia/minzip/vlid)
 
 Lightweight validation library with NO dependencies targeting web browsers and Node.js. A nice Joi alternative
 with a similar API.
