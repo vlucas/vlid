@@ -92,7 +92,7 @@ is an explicit trade-off to keep the core size smaller.
 ## vlid.any()
 
 The base validation object, can be used to represent any value or as a base for completely custom new
-validation rules.
+validation rules. All other validation rules extend from this.
 
 ```javascript
 let result = await v.validate(v.any(), 'whatever you want'); // result.isValid = true
@@ -182,7 +182,8 @@ v.number().rule(value => value <= 100, 'Must be at least 100');
 
 ## vlid.ref(field: String)
 
-Can only be used from within a `v.object()` based schema. References provided data from the provided path.
+Can only be used from within a `v.object()` based schema. References provided data from the provided path. All
+references are evaluated at validation time, AFTER all values have been cast and formatted.
 
 ```javascript
 const schema = v.object({
@@ -200,11 +201,77 @@ const data = {
 const result = await v.validate(schema, data); // result.isValid = false (endDate not before startDate)
 ```
 
+## vlid.string()
+
+String validator.
+
+### string.alphanum([err: String | Function])
+
+Accepts only alphanumeric characters.
+
+### string.email([err: String | Function])
+
+Email validator.
+
+### string.min(min: Number [, err: String | Function])
+
+Minimum string length.
+
+### string.max(max: Number [, err: String | Function])
+
+Maximum string length.
+
+### string.regex(pattern: Regex [, err: String | Function])
+
+Tests input against supplied Regex pattern.
+
+### string.url([err: String | Function])
+
+Ensures input value is a valid URL.
+
+
+
+
+## vlid.number()
+
+```javascript
+v.number().min(100);
+```
+
+### number.min(min: Number [, err: String | Function])
+
+Minimum number that can be input.
+
+### number.max(max: Number [, err: String | Function])
+
+Maximum number that can be input.
+
+
+
+
+## vlid.date()
+
+```javascript
+v.date().min(new Date());
+```
+
+### date.min(min: Date [, err: String | Function])
+
+Minimum date that can be input.
+
+### date.max(max: Date [, err: String | Function])
+
+Maximum date that can be input.
+
+### date.iso([err: String | Function])
+
+Ensure provided date is a valid ISO-8601 format (default format that `JSON.stringify()` will format dates in).
+
+
+
 ## More docs coming soon:
 
 ### vlid.array
 ### vlid.boolean
 ### vlid.date
-### vlid.number
 ### vlid.object
-### vlid.string

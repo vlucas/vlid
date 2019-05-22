@@ -57,7 +57,7 @@ module.exports = class vString extends vBase {
     return this.rule(value => pattern.test(value), err || t('STRING_RULE_REGEX', pattern));
   }
 
-  url(str, err = null) {
+  url(err = null) {
     return this.rule(function validURL(str) {
       var pattern = new RegExp(
         '^(https?:\\/\\/)?' + // protocol
