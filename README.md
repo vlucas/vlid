@@ -18,23 +18,24 @@ fully supported.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents
 
-- [Size](#size)
-- [Installation](#installation)
-- [Principles](#principles)
+  - [Size](#size)
+  - [Installation](#installation)
+  - [Principles](#principles)
 - [Usage / vlid API](#usage--vlid-api)
   - [vlid.any()](#vlidany)
-    - [allow(values: Any | [ Any ])](#allowvalues-any---any-)
-    - [cast(Boolean | Function)](#castboolean--function)
-    - [default(value: any)](#defaultvalue-any)
-    - [required()](#required)
-    - [rule(rule: Function, message: String | Function, opts: Object)](#rulerule-function-message-string--function-opts-object)
-- [More docs coming soon:](#more-docs-coming-soon)
-  - [vlid.array](#vlidarray)
-  - [vlid.boolean](#vlidboolean)
-  - [vlid.date](#vliddate)
-  - [vlid.number](#vlidnumber)
-  - [vlid.object](#vlidobject)
-  - [vlid.string](#vlidstring)
+    - [any.allow(values: Any | [ Any ])](#anyallowvalues-any---any-)
+    - [any.cast(Boolean | Function)](#anycastboolean--function)
+    - [any.default(value: any)](#anydefaultvalue-any)
+    - [any.required([err: String])](#anyrequirederr-string)
+    - [any.rule(rule: Function [, message: String | Function, opts: Object])](#anyrulerule-function--message-string--function-opts-object)
+  - [vlid.ref(field: String)](#vlidreffield-string)
+  - [More docs coming soon:](#more-docs-coming-soon)
+    - [vlid.array](#vlidarray)
+    - [vlid.boolean](#vlidboolean)
+    - [vlid.date](#vliddate)
+    - [vlid.number](#vlidnumber)
+    - [vlid.object](#vlidobject)
+    - [vlid.string](#vlidstring)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -86,9 +87,9 @@ are any, then `validateSync` with throw an error. All built-in rules can be run 
 provides easy ways to add your own rules for the 20% or less of cases where you need something custom.  This
 is an explicit trade-off to keep the core size smaller.
 
-## Usage / vlid API
+# Usage / vlid API
 
-### vlid.any()
+## vlid.any()
 
 The base validation object, can be used to represent any value or as a base for completely custom new
 validation rules.
@@ -97,7 +98,7 @@ validation rules.
 let result = await v.validate(v.any(), 'whatever you want'); // result.isValid = true
 ```
 
-#### allow(values: Any | [ Any ])
+### any.allow(values: Any | [ Any ])
 
 Use `allow` to allow specific values, even though they may not pass validation.
 
@@ -113,7 +114,7 @@ You can also pass in an array of values to allow:
 v.string().allow([null, undefined, '']);
 ```
 
-#### cast(Boolean | Function)
+### any.cast(Boolean | Function)
 
 *Values are NOT CAST BY DEFAULT.* Casting must be explicitly turned on to allow type coercion.
 
@@ -142,7 +143,7 @@ const schema = v.object({
 }).cast(); // Turns casting ON for ALL fields and nested fields in this object
 ```
 
-#### default(value: any)
+### any.default(value: any)
 
 Set and allow a default value if no value is provided.
 
@@ -153,13 +154,18 @@ v.string().required().default('');
 NOTE: `default()` also calls `allow()` under the hood to make sure your provided default value will not
 trigger a validation error.
 
-#### required()
+### any.required([err: String])
 
-Mark a field as required, meaning it cannot be `undefined`, `null`, or an empty string `''`.
+Mark a field as required, meaning it cannot be `undefined`, `null`, or an empty string `''`. Accepts an
+optional custom error message.
+
+```javascript
+v.string().required('Is required');
+```
 
 Use `.allow(value)` to re-allow any of those values if needed.
 
-#### rule(rule: Function, message: String | Function, opts: Object)
+### any.rule(rule: Function [, message: String | Function, opts: Object])
 
 Add a custom validation rule with optional custom error message and options. All of the internal validations
 use `rule()` to add their validation rules.
@@ -171,7 +177,27 @@ Rules must either return boolean true/false is they can be run sync, or a `Promi
 v.number().min(100);
 
 // Custom
-v.number().rule(value => value < 100, 'Must be at least 100');
+v.number().rule(value => value <= 100, 'Must be at least 100');
+```
+
+## vlid.ref(field: String)
+
+Can only be used from within a `v.object()` based schema. References provided data from the provided path.
+
+```javascript
+const schema = v.object({
+  content: v.string().required(),
+  startDate: v.date().required(),
+  endDate: v.date().min(v.ref('startDate')).required(), // References 'startDate' data as min.
+});
+
+const data = {
+  content: 'My stuff here!',
+  startDate: '2019-05-20',
+  endDate: '2019-05-19',
+};
+
+const result = await v.validate(schema, data); // result.isValid = false (endDate not before startDate)
 ```
 
 ## More docs coming soon:
