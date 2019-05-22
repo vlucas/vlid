@@ -5,7 +5,7 @@ const vDate = require('./vDate');
 const vNumber = require('./vNumber');
 const vObject = require('./vObject');
 const vString = require('./vString');
-const { validate, validateSync, ref } = require('./validate');
+const { validate, validateSync, ValidationError, ref } = require('./validate');
 
 module.exports = {
   any: () => new vBase(),
@@ -22,4 +22,5 @@ module.exports = {
   validateSync(schema, data) {
     return schema.validateSync ? schema.validateSync(data) : validateSync(schema, data);
   },
+  ValidationError,
 };
