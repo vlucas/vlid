@@ -43,11 +43,12 @@ fully supported.
     - [date.min(min: Date [, err: String | Function])](#dateminmin-date--err-string--function)
     - [date.max(max: Date [, err: String | Function])](#datemaxmax-date--err-string--function)
     - [date.iso([err: String | Function])](#dateisoerr-string--function)
-  - [More docs coming soon:](#more-docs-coming-soon)
-    - [vlid.array](#vlidarray)
-    - [vlid.boolean](#vlidboolean)
-    - [vlid.date](#vliddate)
-    - [vlid.object](#vlidobject)
+  - [vlid.boolean()](#vlidboolean)
+  - [vlid.array()](#vlidarray)
+    - [array.items(item: vlid.any)](#arrayitemsitem-vlidany)
+    - [array.min(min: Number [, err: String | Function])](#arrayminmin-number--err-string--function)
+    - [array.max(max: Number [, err: String | Function])](#arraymaxmax-number--err-string--function)
+  - [vlid.object(data: Object)](#vlidobjectdata-object)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
