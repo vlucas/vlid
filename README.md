@@ -281,9 +281,76 @@ Ensure provided date is a valid ISO-8601 format (default format that `JSON.strin
 
 
 
-## More docs coming soon:
 
-### vlid.array
-### vlid.boolean
-### vlid.date
-### vlid.object
+## vlid.boolean()
+
+Boolean validator.
+
+```javascript
+v.boolean().required();
+```
+
+Remember that you must explicitly `cast()` if you want vlid to cast string values to boolean.
+
+```javascript
+v.boolean().required().cast(); // NOW casting is ON
+```
+
+Casting accepts all these values:
+```
+let trueValues = [1, 'true', 't', 'on', 'yes'];
+let falseValues = [0, 'false', 'f', 'off', 'no', ''];
+```
+
+## vlid.array()
+
+Array validator.
+
+### array.items(item: vlid.any)
+
+Apply a validation rule to all items in an array.
+
+```javascript
+const schema = v.object({
+  todos: v.array().items(
+    v.object({
+      title: v.string().required(),
+      isDone: v.boolean().required(),
+    });
+  ),
+});
+
+const data = {
+  todos: [
+    {
+      title: 'Task 1',
+      isDone: false,
+    },
+    {
+      title: 'Task 2',
+      isDone: true,
+    },
+  ]
+};
+```
+
+### array.min(min: Number [, err: String | Function])
+
+Minimum number of items that must be present in the array
+
+### array.max(max: Number [, err: String | Function])
+
+Maximum number of items that can be present in the array
+
+
+
+## vlid.object(data: Object)
+
+Object schema validation.
+
+```javascript
+const schema = v.object({
+  title: v.string().required(),
+  isDone: v.boolean().required(),
+});
+```
