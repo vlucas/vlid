@@ -9,7 +9,7 @@ describe('any', () => {
       let result = v.validateSync(v.any(), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('should allow null', () => {
@@ -17,7 +17,7 @@ describe('any', () => {
       let result = v.validateSync(v.any(), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('should allow string type', () => {
@@ -25,7 +25,7 @@ describe('any', () => {
       let result = v.validateSync(v.any(), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('should allow number type', () => {
@@ -33,7 +33,7 @@ describe('any', () => {
       let result = v.validateSync(v.any(), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('should allow boolean type', () => {
@@ -41,7 +41,7 @@ describe('any', () => {
       let result = v.validateSync(v.any(), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('should allow object type', () => {
@@ -49,7 +49,7 @@ describe('any', () => {
       let result = v.validateSync(v.any(), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
   });
 
@@ -59,7 +59,7 @@ describe('any', () => {
       let result = v.validateSync(v.string().default(null), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(null);
+      expect(result.value).toEqual(null);
     });
   });
 
@@ -69,7 +69,7 @@ describe('any', () => {
       let result = v.validateSync(v.number().allow(input), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('should be able to be provide an array of allowed values', () => {
@@ -78,7 +78,7 @@ describe('any', () => {
       let result = v.validateSync(v.number().allow(allowed), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
   });
 
@@ -89,7 +89,7 @@ describe('any', () => {
 
       isValidWithoutErrors(result);
       expect(result.errors).toEqual([]);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('array of validation rules fails when all validation rules fail', () => {
@@ -97,7 +97,7 @@ describe('any', () => {
       let result = v.validateSync([v.boolean(), v.string()], input);
 
       isNotValidWithErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
     });
 
     it('array of multiple validation rule failures are reported as a single error', () => {
@@ -105,7 +105,7 @@ describe('any', () => {
       let result = v.validateSync([v.boolean(), v.string()], input);
 
       isNotValidWithErrors(result);
-      expect(result.data).toEqual(input);
+      expect(result.value).toEqual(input);
       expect(result.errors[0].message).toContain('Must be a boolean');
       expect(result.errors[0].message).toContain('Must be a string');
       expect(result.errors.length).toEqual(1);
@@ -132,7 +132,7 @@ describe('any', () => {
         })
         .catch(err => {
           expect(err.errors[0].message).toContain('Must be a string');
-          expect(err.data).toBe(input);
+          expect(err.value).toBe(input);
         });
     });
 
@@ -155,5 +155,4 @@ describe('any', () => {
       }).toThrow(new Error('Cannot return Promise futures from vlid.validateSync()'));
     });
   });
-
 });

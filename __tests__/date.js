@@ -23,7 +23,7 @@ describe('date', () => {
       let result = v.validateSync(v.date().cast(), '2019-05-10');
 
       isValidWithoutErrors(result);
-      expect(result.data instanceof Date).toEqual(true);
+      expect(result.value instanceof Date).toEqual(true);
     });
 
     it('should cast ISO-8601 date strings to Date object and pass validation', () => {
@@ -31,7 +31,7 @@ describe('date', () => {
       let result = v.validateSync(v.date().cast(), input);
 
       isValidWithoutErrors(result);
-      expect(result.data instanceof Date).toEqual(true);
+      expect(result.value instanceof Date).toEqual(true);
     });
 
     it('should cast strings with invalid dates to NaN and fail validation', () => {

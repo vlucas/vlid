@@ -19,7 +19,7 @@ describe('object', () => {
 
   describe('cast', () => {
     it('should cast all nested keys validation', () => {
-      const data = {
+      const value = {
         isActive: 'true',
         num: '123',
       };
@@ -27,13 +27,13 @@ describe('object', () => {
         isActive: v.boolean().required(),
         num: v.number().max(999).required(),
       }).cast();
-      const result = schema.validateSync(data);
+      const result = schema.validateSync(value);
 
       isValidWithoutErrors(result);
     });
 
     it('should cast all nested level 2 keys validation', () => {
-      const data = {
+      const value = {
         isActive: 'true',
         num: '123',
         data: {
@@ -47,7 +47,7 @@ describe('object', () => {
           id: v.number().required(),
         }),
       }).cast();
-      const result = schema.validateSync(data);
+      const result = schema.validateSync(value);
 
       isValidWithoutErrors(result);
     });
@@ -55,25 +55,25 @@ describe('object', () => {
 
   describe('keys validation', () => {
     it('should validate an object with keys', () => {
-      const data = {
+      const value = {
         foo: 'bar',
       };
       const schema = v.object({
         'foo': v.string().required(),
       });
-      const result = schema.validateSync(data);
+      const result = schema.validateSync(value);
 
       isValidWithoutErrors(result);
     });
 
     it('should validate an object with keys is not valid', () => {
-      const data = {
+      const value = {
         foo: 1,
       };
       const schema = v.object({
         'foo': v.string().required(),
       });
-      const result = schema.validateSync(data);
+      const result = schema.validateSync(value);
 
       isNotValidWithErrors(result);
     });

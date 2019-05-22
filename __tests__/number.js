@@ -44,7 +44,7 @@ describe('number', () => {
       let result = v.validateSync(v.number().cast(), '1');
 
       isValidWithoutErrors(result);
-      expect(result.data).toBe(1);
+      expect(result.value).toBe(1);
     });
 
     it('should cast non-number strings to NaN and fail _base type validation', () => {

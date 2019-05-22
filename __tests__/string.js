@@ -104,13 +104,13 @@ describe('string', () => {
   });
 
   describe('regex', () => {
-    it('should pass with valid data matching regex', () => {
+    it('should pass with valid value matching regex', () => {
       let result = v.validateSync(v.string().regex(/^[0-9]+$/), '12412487');
 
       isValidWithoutErrors(result);
     });
 
-    it('should fail with invalid data not matching regex', () => {
+    it('should fail with invalid value not matching regex', () => {
       let result = v.validateSync(v.string().regex(/^[0-9]+$/), '12412487x');
 
       isNotValidWithErrors(result);
@@ -136,28 +136,28 @@ describe('string', () => {
       let result = v.validateSync(v.string(), 'test');
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual('test');
+      expect(result.value).toEqual('test');
     });
 
     it('should pass with number and cast', () => {
       let result = v.validateSync(v.string().cast(), 1);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual('1');
+      expect(result.value).toEqual('1');
     });
 
     it('should pass with boolean and cast', () => {
       let result = v.validateSync(v.string().cast(), true);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual('true');
+      expect(result.value).toEqual('true');
     });
 
     it('should pass with object and cast', () => {
       let result = v.validateSync(v.string().cast(), {});
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual('[object Object]');
+      expect(result.value).toEqual('[object Object]');
     });
 
     it('should pass with object with custom toString method and cast', () => {
@@ -169,7 +169,7 @@ describe('string', () => {
       let result = v.validateSync(v.string().cast(), obj);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual('{"foo":"bar"}');
+      expect(result.value).toEqual('{"foo":"bar"}');
     });
   });
 });

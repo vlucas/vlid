@@ -11,11 +11,11 @@ describe('any', () => {
         startDate,
         endDate,
       });
-      let data = {
+      let value = {
         startDate: '2019-10-05T14:48:00.000Z',
         endDate: '2019-10-06T14:48:00.000Z',
       };
-      let result = v.validateSync(schema, data);
+      let result = v.validateSync(schema, value);
 
       isValidWithoutErrors(result);
     });
@@ -27,11 +27,11 @@ describe('any', () => {
         startDate,
         endDate,
       });
-      let data = {
+      let value = {
         startDate: '2019-10-07T14:48:00.000Z',
         endDate: '2019-10-06T14:48:00.000Z',
       };
-      let result = v.validateSync(schema, data);
+      let result = v.validateSync(schema, value);
 
       expect(result.errors[0].message).toContain('Date must be after');
       expect(result.errors[0].path).toEqual('endDate');

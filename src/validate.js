@@ -10,9 +10,10 @@ class ValidationError extends Error {
   }
 }
 
-function createError(msg, path = null) {
+function createError(msg, path = null, value = null) {
   let e = new ValidationError(msg);
 
+  e.value = value;
   e.path = path;
 
   return e;
@@ -37,11 +38,11 @@ function setData(data) {
  *
  * @return Promise
  */
-function validate(any, data, opts = {}) {
-  let results = validateSync(any, data, Object.assign(opts, { async: true }));
+function validate(any, value, opts = {}) {
+  let results = validateSync(any, value, Object.assign(opts, { async: true }));
 
   return Promise.all(results.map(r => r instanceof Promise ? r : Promise.resolve(r)))
-    .then(results => formatResults(results, data))
+    .then(results => formatResults(results, value))
     .then(result => {
       if (!result.isValid) {
         let err = createError(result.message);
@@ -58,16 +59,16 @@ function validate(any, data, opts = {}) {
 /**
  * Primary validation function
  */
-function validateSync(any, data, opts = {}) {
+function validateSync(any, value, opts = {}) {
   let path = opts.path || '';
   let errors = [];
   let isValid = true;
   let results = [];
-  let castData = data;
+  let castValue = value;
 
   // Array = If ANY validation rules passes, the whole thing passes
   if (Array.isArray(any)) {
-    results = any.map(schema => validateSync(schema, data));
+    results = any.map(schema => validateSync(schema, value));
     isValid = results.some(r => r.isValid === true);
 
     // Clear errors if isValid (at least one rule returned true)
@@ -77,34 +78,34 @@ function validateSync(any, data, opts = {}) {
 
     // Return a single ValidationError
     if (errors.length > 0) {
-      errors = [createError(t('GENERIC_ERROR_MULTIPLE') + ': (' + errors.map(e => e.message).join(') ' + t('GENERIC_OR') + ' (') + ')', path)];
+      errors = [createError(t('GENERIC_ERROR_MULTIPLE') + ': (' + errors.map(e => e.message).join(') ' + t('GENERIC_OR') + ' (') + ')', path, value)];
     }
 
     return {
-      data,
+      value,
       errors,
       isValid,
     };
   // Normal single validation
   } else {
-    any.value(data);
+    any.value(value);
 
     if (opts.cast) {
       any.cast();
     }
 
-    castData = any.value();
+    castValue = any.value();
 
     if (_data && opts.path) {
-      oset(_data, opts.path, castData);
+      oset(_data, opts.path, castValue);
     }
 
     if (any._allow !== undefined) {
-      let isAllowed = Array.isArray(any._allow) ? any._allow.includes(castData) : any._allow === castData;
+      let isAllowed = Array.isArray(any._allow) ? any._allow.includes(castValue) : any._allow === castValue;
 
       if (isAllowed) {
         return {
-          data: castData,
+          value: castValue,
           errors: [],
           isValid: true,
         };
@@ -112,24 +113,24 @@ function validateSync(any, data, opts = {}) {
     }
 
     results = any._rules.map(rule => {
-      let ruleData = rule.rawData ? data : castData;
+      let ruleValue = rule.originalValue ? value : castValue;
       let msg =
         typeof rule.message === 'function'
-        ? rule.message(ruleData, opts)
+        ? rule.message(ruleValue, opts)
         : rule.message;
 
-      let ruleResult = rule.run(ruleData) || createError(msg, path);
+      let ruleResult = rule.run(ruleValue) || createError(msg, path, value);
 
       return ruleResult;
     });
     let hasPromises = results.filter(r => r instanceof Promise).length > 0;
 
     if (hasPromises && !opts.async) {
-      throw createError('Cannot return Promise futures from vlid.validateSync()', path);
+      throw createError('Cannot return Promise futures from vlid.validateSync()', path, value);
     }
   }
 
-  return opts.async ? results : formatResults(results, castData, opts.path);
+  return opts.async ? results : formatResults(results, castValue, opts.path);
 }
 
 function flattenErrors(results) {
@@ -144,15 +145,15 @@ function arrayFlatten(array) {
 /**
  * Format array of results into a return object
  */
-function formatResults(results, data, path = null) {
+function formatResults(results, value, path = null) {
   let errors = results.filter(r => r instanceof Error);
   let isValid = results.every(r => r === true);
 
   let result = {
-    data,
     errors,
     isValid,
     path,
+    value,
   };
 
   // Show nested results when there is a previous path

@@ -4,9 +4,9 @@ const v = require('../src/index');
 describe('cast', () => {
 
   describe('custom cast function', () => {
-    it('should cast data according to custom cast function logic', () => {
-      function stringSevenToNumber(data) {
-        return data === 'seven' ? 7 : data;
+    it('should cast value according to custom cast function logic', () => {
+      function stringSevenToNumber(value) {
+        return value === 'seven' ? 7 : value;
       }
 
       let input = 'seven';
@@ -14,7 +14,7 @@ describe('cast', () => {
       let result = v.validateSync(v.any().cast(stringSevenToNumber), input);
 
       isValidWithoutErrors(result);
-      expect(result.data).toEqual(expected);
+      expect(result.value).toEqual(expected);
     });
   });
 

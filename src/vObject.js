@@ -10,29 +10,31 @@ module.exports = class vObject extends vBase {
   }
 
   _base() {
-    return this.rule(isObject, value => t('OBJECT_BASE', value));
+    return this.rule(isPlainObject, value => t('OBJECT_BASE', value));
   }
 
   /**
    * Override base validation
    */
-  validateSync(data, opts = {}) {
+  validateSync(value, opts = {}) {
     let results = [];
     let shouldCast = opts.cast || this._doCast;
 
-    validate.setData(data);
-    results.push(validate.validateSync(this, data, opts)); // do base validation
+    validate.setData(value);
+    results.push(validate.validateSync(this, value, opts)); // do base validation
 
-    let dt = typeof data;
-    let isPlainObject = false;
-
-    if (dt === 'object') {
-      isPlainObject = Object.prototype.toString.call(data) === '[object Object]';
-    }
-
-    if (data && isPlainObject) {
+    if (value && isPlainObject(value)) {
       Object.keys(this._schema).forEach(path => {
-        results.push(this._schema[path].validateSync(data[path], { data, path, cast: shouldCast }));
+        let schema = validate.oget(this._schema, path);
+        let val = validate.oget(value, path);
+        let nPath = opts.path ? opts.path + '.' + path : path;
+        let nOpts = Object.assign({}, opts, { path: nPath, cast: shouldCast });
+
+        if (isPlainObject(schema) && !(schema instanceof vBase)) {
+          results.push((new vObject(schema)).validateSync(val, nOpts));
+        } else {
+          results.push(schema.validateSync(val, nOpts));
+        }
       });
     }
 
@@ -40,7 +42,7 @@ module.exports = class vObject extends vBase {
   }
 };
 
-function isObject(value) {
+function isPlainObject(value) {
   return (
     typeof value === 'object'
     && Object.prototype.toString.call(value) === '[object Object]'

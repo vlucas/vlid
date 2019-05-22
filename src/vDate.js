@@ -29,14 +29,14 @@ module.exports = class vDate extends vBase {
       value => value <= val(max),
       err ? err : () => t('DATE_RULE_MAX', val(max))
     );
-  }
+ }
 
   iso(err = null) {
     this.cast(); // This rule requires casting (ISO-8601 date strings can be parsed)
     this._base = () => {};
 
     // This ISO rule has to be run on the raw input data, not the cast data
-    return this.rule(isISODate, err || t('DATE_RULE_ISO'), { rawData: true });
+    return this.rule(isISODate, err || t('DATE_RULE_ISO'), { originalValue: true });
   }
 };
 
