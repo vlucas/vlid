@@ -31,7 +31,7 @@ module.exports = class vObject extends vBase {
         let nOpts = Object.assign({}, opts, { path: nPath, cast: shouldCast });
 
         if (isPlainObject(schema) && !(schema instanceof vBase)) {
-          results.push((new vObject(schema)).validateSync(val, nOpts));
+          results.push(new vObject(schema).validateSync(val, nOpts));
         } else {
           results.push(schema.validateSync(val, nOpts));
         }
@@ -43,8 +43,5 @@ module.exports = class vObject extends vBase {
 };
 
 function isPlainObject(value) {
-  return (
-    typeof value === 'object'
-    && Object.prototype.toString.call(value) === '[object Object]'
-  );
+  return typeof value === 'object' && Object.prototype.toString.call(value) === '[object Object]';
 }

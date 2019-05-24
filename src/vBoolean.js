@@ -3,10 +3,7 @@ const vBase = require('./vBase');
 
 module.exports = class vBoolean extends vBase {
   _base() {
-    return this.rule(
-      value => typeof value === 'boolean',
-      value => t('BOOLEAN_BASE', value)
-    );
+    return this.rule(value => typeof value === 'boolean', value => t('BOOLEAN_BASE', value));
   }
 
   _cast() {
@@ -31,4 +28,3 @@ module.exports = class vBoolean extends vBase {
     }, false);
   }
 };
-

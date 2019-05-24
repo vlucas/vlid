@@ -6,10 +6,7 @@ const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z
 
 module.exports = class vString extends vBase {
   _base() {
-    return this.rule(
-      value => typeof value === 'string',
-      value => t('STRING_BASE', value)
-    );
+    return this.rule(value => typeof value === 'string', value => t('STRING_BASE', value));
   }
 
   _cast() {

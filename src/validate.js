@@ -41,7 +41,7 @@ function setData(data) {
 function validate(any, value, opts = {}) {
   let results = validateSync(any, value, Object.assign(opts, { async: true }));
 
-  return Promise.all(results.map(r => r instanceof Promise ? r : Promise.resolve(r)))
+  return Promise.all(results.map(r => (r instanceof Promise ? r : Promise.resolve(r))))
     .then(results => formatResults(results, value))
     .then(result => {
       if (!result.isValid) {
@@ -72,13 +72,22 @@ function validateSync(any, value, opts = {}) {
     isValid = results.some(r => r.isValid === true);
 
     // Clear errors if isValid (at least one rule returned true)
-    errors = isValid ? [] : results.filter(r => r.errors.length > 0)
-      .map(r => r.errors)
-      .reduce((acc, val) => acc.concat(val), []);
+    errors = isValid
+      ? []
+      : results
+          .filter(r => r.errors.length > 0)
+          .map(r => r.errors)
+          .reduce((acc, val) => acc.concat(val), []);
 
     // Return a single ValidationError
     if (errors.length > 0) {
-      errors = [createError(t('GENERIC_ERROR_MULTIPLE') + ': (' + errors.map(e => e.message).join(') ' + t('GENERIC_OR') + ' (') + ')', path, value)];
+      errors = [
+        createError(
+          t('GENERIC_ERROR_MULTIPLE') + ': (' + errors.map(e => e.message).join(') ' + t('GENERIC_OR') + ' (') + ')',
+          path,
+          value
+        ),
+      ];
     }
 
     return {
@@ -86,7 +95,7 @@ function validateSync(any, value, opts = {}) {
       errors,
       isValid,
     };
-  // Normal single validation
+    // Normal single validation
   } else {
     any.value(value);
 
@@ -114,10 +123,7 @@ function validateSync(any, value, opts = {}) {
 
     results = any._rules.map(rule => {
       let ruleValue = rule.originalValue ? value : castValue;
-      let msg =
-        typeof rule.message === 'function'
-        ? rule.message(ruleValue, opts)
-        : rule.message;
+      let msg = typeof rule.message === 'function' ? rule.message(ruleValue, opts) : rule.message;
 
       let ruleResult = rule.run(ruleValue) || createError(msg, path, value);
 
@@ -134,8 +140,9 @@ function validateSync(any, value, opts = {}) {
 }
 
 function flattenErrors(results) {
-  return arrayFlatten(results.filter(r => r.errors ? r.errors.length > 0 : r instanceof Error)
-      .map(r => r.errors || r));
+  return arrayFlatten(
+    results.filter(r => (r.errors ? r.errors.length > 0 : r instanceof Error)).map(r => r.errors || r)
+  );
 }
 
 function arrayFlatten(array) {

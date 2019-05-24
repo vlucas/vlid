@@ -67,7 +67,7 @@ module.exports = class vBase {
 
     // Cast value if specified (strict by default)
     if (this._doCast) {
-      this._casts.forEach(cb => castData = cb(castData));
+      this._casts.forEach(cb => (castData = cb(castData)));
     }
 
     return castData;

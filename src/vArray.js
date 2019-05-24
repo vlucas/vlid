@@ -19,17 +19,11 @@ module.exports = class vArray extends vBase {
   }
 
   min(min, err = null) {
-    return this.rule(
-      value => value.length >= min,
-      value => err || t('ARRAY_RULE_MIN', min)
-    );
+    return this.rule(value => value.length >= min, value => err || t('ARRAY_RULE_MIN', min));
   }
 
   max(max, err = null) {
-    return this.rule(
-      value => value.length <= max,
-      value => err || t('ARRAY_RULE_MAX', max)
-    );
+    return this.rule(value => value.length <= max, value => err || t('ARRAY_RULE_MAX', max));
   }
 
   /**

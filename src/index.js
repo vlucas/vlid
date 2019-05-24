@@ -13,7 +13,7 @@ module.exports = {
   boolean: () => new vBoolean(),
   date: () => new vDate(),
   number: () => new vNumber(),
-  object: (obj) => new vObject(obj),
+  object: obj => new vObject(obj),
   ref,
   string: () => new vString(),
   validate(schema, data) {
