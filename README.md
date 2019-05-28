@@ -22,6 +22,7 @@ fully supported.
   - [Installation](#installation)
   - [Principles](#principles)
 - [Usage / vlid API](#usage--vlid-api)
+  - [Example Object Schema](#example-object-schema)
   - [vlid.any()](#vlidany)
     - [any.allow(values: Any | [ Any ])](#anyallowvalues-any---any-)
     - [any.cast(Boolean | Function)](#anycastboolean--function)
@@ -49,6 +50,8 @@ fully supported.
     - [array.min(min: Number [, err: String | Function])](#arrayminmin-number--err-string--function)
     - [array.max(max: Number [, err: String | Function])](#arraymaxmax-number--err-string--function)
   - [vlid.object(data: Object)](#vlidobjectdata-object)
+  - [Validation Result Object](#validation-result-object)
+  - [vlid.ValidationError](#vlidvalidationerror)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
