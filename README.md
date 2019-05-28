@@ -85,22 +85,40 @@ import v from 'vlid';
 
 vlid.js has a few guiding principles:
 
-- *Low bundle size* - Since vlid.js targets browsers as well as Node.js, we should aim to ship as few bytes as
+- **Low bundle size** - Since vlid.js targets browsers as well as Node.js, we should aim to ship as few bytes as
 possible. We transpile as little as possible and only use JavaScript features with 90%+ global browser
 support. _This also means vlid.js does not support IE11 since it would require a significant amount of
 additional transpilation_.
-- *No dependencies* - Your validation library shouldn't have to pull in half of lodash and a bunch of other
+- **No dependencies** - Your validation library shouldn't have to pull in half of lodash and a bunch of other
 3rd-party libraries just to do its job.
-- *Simple API* - Keep the public API clean and simple (easy to learn), without too many ways to do the same
+- **Simple API** - Keep the public API clean and simple (easy to learn), without too many ways to do the same
 thing
-- *Async validation* - Validation is done async so that async rules can be easily added at any time. You _can_
+- **Async validation** - Validation is done async so that async rules can be easily added at any time. You _can_
 use `validateSync` if there are no async valiation rules (i.e. rules that return a `Promise` object). If there
 are any, then `validateSync` with throw an error. All built-in rules can be run either async or sync.
-- *80 / 20 rule* - vlid.js provides all the staple built-ins that you need in 80%+ of most typical apps, and
+- **80 / 20 rule** - vlid.js provides all the staple built-ins that you need in 80%+ of most typical apps, and
 provides easy ways to add your own rules for the 20% or less of cases where you need something custom.  This
 is an explicit trade-off to keep the core size smaller.
 
 # Usage / vlid API
+
+## Example Object Schema
+
+Here is a more full-featured example of a possible object schema to validate new blog posts:
+
+```javascript
+const schema = v.object({
+  tags: v.array().items(v.string()).min(1, 'Must have at least one tag').required(),
+  title: v.string().required(),
+  isPublished: v.boolean().required().cast(),
+  authorId: v.number().cast().default(null),
+  dtCreated: v.date().iso().required(),
+});
+
+const data = req.body; // JSON request data from Express.js
+
+const result = await v.validate(schema, data); // result.isValid = true
+```
 
 ## vlid.any()
 
@@ -129,7 +147,7 @@ v.string().allow([null, undefined, '']);
 
 ### any.cast(Boolean | Function)
 
-*Values are NOT CAST BY DEFAULT.* Casting must be explicitly turned on to allow type coercion.
+**Values are NOT CAST BY DEFAULT.** Casting must be explicitly turned on to allow type coercion.
 
 Use no arguments, or use a boolean `true` or `false` to turn casting on or off:
 
@@ -333,25 +351,68 @@ const data = {
     },
   ]
 };
+
+const result = await v.validate(schema, data); // result.isValid = true
 ```
 
 ### array.min(min: Number [, err: String | Function])
 
 Minimum number of items that must be present in the array
 
+```javascript
+const result = await v.validate(v.array().min(1), []); // result.isValid = false (min. 1 items required)
+```
+
 ### array.max(max: Number [, err: String | Function])
 
 Maximum number of items that can be present in the array
+
+```javascript
+const result = await v.validate(v.array().max(2), [1, 2, 3]); // result.isValid = false (max. 2 items in array)
+```
 
 
 
 ## vlid.object(data: Object)
 
-Object schema validation.
+Object schema validation. Specify keys with other validation rules as the values.
 
 ```javascript
 const schema = v.object({
   title: v.string().required(),
   isDone: v.boolean().required(),
 });
+
+const data = {
+  title: 'My todo task',
+  isDone: false,
+};
+
+const result = await v.validate(schema, data); // result.isValid = true
+```
+
+## Validation Result Object
+
+Each call to either `validate` or `validateSync` will resolve or return a validation result object.
+
+```
+{
+  isValid: Boolean,
+  errors: [], // Array of ValidationError objects
+  value: Mixed, // whatever data was passed in, with casting applied
+  results: [], // Array of failed validation results
+}
+```
+
+## vlid.ValidationError
+
+Each validation error will return a `ValidationError` object (extended from the built-in `Error` object) with
+the following keys:
+
+```
+{
+  message: String,
+  path: String | null, // Path to nested key if in object validaiton, or null
+  value: Mixed, // whatever data was passed in, with casting applied
+}
 ```
