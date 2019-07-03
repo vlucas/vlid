@@ -10,6 +10,18 @@ describe('object', () => {
       isValidWithoutErrors(result);
     });
 
+    it('should pass with plain object not wrapped in v.object()', () => {
+      let result = v.validateSync({}, {});
+
+      isValidWithoutErrors(result);
+    });
+
+    it('should pass with plain object not wrapped in v.object() async validate', async () => {
+      let result = await v.validate({}, {});
+
+      isValidWithoutErrors(result);
+    });
+
     it('should fail with number', () => {
       let result = v.validateSync(v.object(1), 1);
 

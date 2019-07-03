@@ -1,6 +1,7 @@
 const { t } = require('./i18n');
 const vBase = require('./vBase');
 const validate = require('./validate');
+const { isPlainObject } = require('./util');
 
 module.exports = class vObject extends vBase {
   constructor(schema = {}) {
@@ -41,7 +42,3 @@ module.exports = class vObject extends vBase {
     return validate.formatResults(results);
   }
 };
-
-function isPlainObject(value) {
-  return typeof value === 'object' && Object.prototype.toString.call(value) === '[object Object]';
-}

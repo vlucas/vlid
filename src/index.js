@@ -1,3 +1,4 @@
+const { isPlainObject } = require('./util');
 const vArray = require('./vArray');
 const vBase = require('./vBase');
 const vBoolean = require('./vBoolean');
@@ -17,9 +18,17 @@ module.exports = {
   ref,
   string: () => new vString(),
   validate(schema, data) {
+    if (!schema.value && isPlainObject(schema)) {
+      schema = new vObject(schema);
+    }
+
     return schema.validate ? schema.validate(data) : validate(schema, data);
   },
   validateSync(schema, data) {
+    if (!schema.value && isPlainObject(schema)) {
+      schema = new vObject(schema);
+    }
+
     return schema.validateSync ? schema.validateSync(data) : validateSync(schema, data);
   },
   ValidationError,
