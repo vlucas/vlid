@@ -35,7 +35,7 @@ module.exports = class vArray extends vBase {
     results.push(validate.validateSync(this, data, opts)); // do base validation
 
     if (!Array.isArray(data)) {
-      return validate.formatResults(results);
+      return validate.formatResults(results, data);
     }
 
     if (this._schema) {
@@ -44,6 +44,6 @@ module.exports = class vArray extends vBase {
       });
     }
 
-    return validate.formatResults(results);
+    return validate.formatResults(results, data);
   }
 };

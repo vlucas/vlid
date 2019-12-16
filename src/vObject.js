@@ -39,6 +39,6 @@ module.exports = class vObject extends vBase {
       });
     }
 
-    return validate.formatResults(results);
+    return validate.formatResults(results, value);
   }
 };
