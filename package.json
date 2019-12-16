@@ -1,6 +1,6 @@
 {
   "name": "vlid",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Lightweight validation library with NO dependencies. A nice Joi alternative with a similar API.",
   "main": "dist/index.js",
   "source": "src/index.js",
