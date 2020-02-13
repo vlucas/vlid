@@ -10,6 +10,18 @@ describe('object', () => {
       isValidWithoutErrors(result);
     });
 
+    it('should pass with plain object not wrapped in v.object()', () => {
+      let result = v.validateSync({}, {});
+
+      isValidWithoutErrors(result);
+    });
+
+    it('should pass with plain object not wrapped in v.object() async validate', async () => {
+      let result = await v.validate({}, {});
+
+      isValidWithoutErrors(result);
+    });
+
     it('should fail with number', () => {
       let result = v.validateSync(v.object(1), 1);
 
@@ -76,6 +88,48 @@ describe('object', () => {
       const result = schema.validateSync(value);
 
       isNotValidWithErrors(result);
+    });
+  });
+
+  describe('sync validate vs async validate', () => {
+    it('should return the same result from async validate vs. sync validte', () => {
+      const data = {
+        a: 6,
+      };
+      const schema = v.object({
+        a: v.number().min(6).required(),
+      });
+      const resultSync = schema.validateSync(data);
+
+      return schema.validate(data).then((resultAsync) => {
+        expect(resultAsync).toEqual(resultSync);
+      });
+    });
+  });
+
+  describe('reported issues', () => {
+    // @link https://github.com/vlucas/vlid/issues/6
+    it('issue #6 - should support ref regardless of key order', () => {
+      const data = {
+        a: 6,
+      };
+
+      const result1 = v.object({
+        a: v.number().min(v.ref('b')).required(),
+        b: v.number().default(5),
+      }).validate(data);
+
+      const result2 = v.object({
+        b: v.number().default(5),
+        a: v.number().min(v.ref('b')).required(),
+      }).validate(data);
+
+      return Promise.all([result1, result2])
+        .then(([result1, result2]) => {
+          expect(result1).toEqual(result2);
+          isValidWithoutErrors(result1);
+          isValidWithoutErrors(result2);
+        });
     });
   });
 
