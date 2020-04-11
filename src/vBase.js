@@ -65,6 +65,10 @@ module.exports = class vBase {
 
     let castData = this._value === undefined ? this._default : this._value;
 
+    if (typeof castData === 'function') {
+      castData = castData();
+    }
+
     // Cast value if specified (strict by default)
     if (this._doCast) {
       this._casts.forEach(cb => (castData = cb(castData)));

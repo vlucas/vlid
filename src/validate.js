@@ -39,7 +39,11 @@ function setData(data) {
  * @return Promise
  */
 function validate(any, value, opts = {}) {
-  let results = validateSync(any, value, Object.assign(opts, { async: true }));
+  let results = [];
+  
+  results.push(validateSync(any, value, Object.assign(opts, { async: true })));
+
+  console.log('Async results = ', results);
 
   return Promise.all(results.map(r => (r instanceof Promise ? r : Promise.resolve(r))))
     .then(results => formatResults(results, value))
@@ -136,7 +140,7 @@ function validateSync(any, value, opts = {}) {
     }
   }
 
-  return opts.async ? results : formatResults(results, castValue, opts.path);
+  return formatResults(results, castValue, opts.path);
 }
 
 function flattenErrors(results) {

@@ -2,7 +2,7 @@ const { isNotValidWithErrors, isValidWithoutErrors } = require('./_util');
 const v = require('../src/index');
 
 describe('object', () => {
-
+/*
   describe('type', () => {
     it('should pass with object', () => {
       let result = v.validateSync(v.object({}), {});
@@ -64,7 +64,41 @@ describe('object', () => {
       isValidWithoutErrors(result);
     });
   });
+*/
+  describe('defaults', () => {
+    it('should fill in default values as functions', () => {
+      const now = new Date();
+      const value = {};
+      const schema = v.object({
+        created_at: v.date().default(() => now),
+        num: v.number().max(999).default(null),
+      });
+      const result = schema.validateSync(value);
 
+      isValidWithoutErrors(result);
+
+      expect(result.value.created_at).toEqual(now);
+      expect(result.value.num).toEqual(null);
+    });
+
+    it('should fill in default values as functions with async validate', async () => {
+      const now = new Date();
+      const value = {};
+      const schema = v.object({
+        created_at: v.date().default(() => now),
+        num: v.number().max(999).default(null),
+      });
+      const result = await schema.validate(value);
+
+      isValidWithoutErrors(result);
+
+      console.log(result);
+
+      expect(result.value.created_at).toEqual(now);
+      expect(result.value.num).toEqual(null);
+    });
+  });
+/*
   describe('keys validation', () => {
     it('should validate an object with keys', () => {
       const value = {
@@ -132,5 +166,5 @@ describe('object', () => {
         });
     });
   });
-
+*/
 });
