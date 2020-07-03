@@ -6,7 +6,9 @@ const { t } = require('./i18n');
 class ValidationError extends Error {
   constructor(...args) {
     super(...args);
-    Error.captureStackTrace(this, ValidationError);
+    if(Error.captureStackTrace) {
+      Error.captureStackTrace(this, ValidationError);
+    }
   }
 }
 
